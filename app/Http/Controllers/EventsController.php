@@ -104,9 +104,13 @@ class EventsController extends Controller
 
     public function getEventsWithWorkshops() {
         try {
-            
             //though I work using services classes but just for sake of time limitations i am writing all code in controllers.
             $events = Event::with('workshops')->get();
+
+            if(!$events){
+                throw new Exception("No events found", Response::HTTP_OK);
+            }
+            
             $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
 
         } catch (Exception $exception) {
@@ -192,6 +196,22 @@ class EventsController extends Controller
      */
 
     public function getFutureEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 2');
+        try {
+            $events = Event::whereHas('workshops', function($query){
+                return $query->where('start', '>', now());
+            })->with('workshops')->get();
+
+            if(!$events){
+                throw new Exception("No events found", Response::HTTP_OK);
+            }
+            
+            $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
+
+        } catch (Exception $exception) {
+            $response = $this->sendResponse($exception->getMessage(), $exception->getCode(), null, false);
+            throw new Exception($exception->getMessage(), Response::HTTP_OK);
+        }
+
+        return $response;
     }
 }
