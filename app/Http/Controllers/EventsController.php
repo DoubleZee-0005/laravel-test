@@ -111,7 +111,13 @@ class EventsController extends Controller
                 throw new Exception("No events found", Response::HTTP_OK);
             }
             
-            $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
+            //============================= for better structured response ============================
+            //
+            //=========================================================================================
+            // $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
+            //=========================================================================================
+
+            $response = $events;
 
         } catch (Exception $exception) {
             $response = $this->sendResponse($exception->getMessage(), $exception->getCode(), null, false);
@@ -204,8 +210,14 @@ class EventsController extends Controller
             if(!$events){
                 throw new Exception("No events found", Response::HTTP_OK);
             }
+
+            //============================= for better structured response ============================
+            //
+            //=========================================================================================
+            // $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
+            //=========================================================================================
             
-            $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
+            $response = $events;
 
         } catch (Exception $exception) {
             $response = $this->sendResponse($exception->getMessage(), $exception->getCode(), null, false);

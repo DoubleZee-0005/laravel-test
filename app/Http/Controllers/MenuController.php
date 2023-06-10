@@ -4,9 +4,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\MenuItem;
-use Illuminate\Routing\Controller as BaseController;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
-class MenuController extends BaseController
+
+class MenuController extends Controller
 {
     /* TODO: complete getMenuItems so that it returns a nested menu structure from the database
     Requirements
@@ -93,6 +95,26 @@ class MenuController extends BaseController
      */
 
     public function getMenuItems() {
-        throw new \Exception('implement in coding task 3');
+        try {
+            $menuItems = MenuItem::whereNull('parent_id')->with('children')->get();
+
+            if(!$menuItems){
+                throw new Exception("No events found", Response::HTTP_OK);
+            }
+
+            //============================= for better structured response ============================
+            //
+            //=========================================================================================
+            // $response = $this->sendResponse("MenuItems fetched successfully", Response::HTTP_OK, $menuItems, true);
+            //=========================================================================================
+            
+            $response = $menuItems;
+
+        } catch (Exception $exception) {
+            $response = $this->sendResponse($exception->getMessage(), $exception->getCode(), null, false);
+            throw new Exception($exception->getMessage(), Response::HTTP_OK);
+        }
+
+        return $response;
     }
 }
