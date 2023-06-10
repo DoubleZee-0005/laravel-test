@@ -129,5 +129,6 @@ class CreateCinemaSchema extends Migration
         Schema::dropIfExists('shows');
         Schema::dropIfExists('show_rooms_seats');
         Schema::dropIfExists('show_rooms');
+        Schema::dropIfExists('movie_show');
     }
 }
