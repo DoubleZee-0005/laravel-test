@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Event;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class EventsController extends BaseController
+class EventsController extends Controller
 {
     public function getWarmupEvents() {
         return Event::all();
@@ -101,7 +103,18 @@ class EventsController extends BaseController
      */
 
     public function getEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 1');
+        try {
+            
+            //though I work using services classes but just for sake of time limitations i am writing all code in controllers.
+            $events = Event::with('workshops')->get();
+            $response = $this->sendResponse("Events fetched successfully", Response::HTTP_OK, $events, true);
+
+        } catch (Exception $exception) {
+            $response = $this->sendResponse($exception->getMessage(), $exception->getCode(), null, false);
+            throw new Exception($exception->getMessage(), Response::HTTP_OK);
+        }
+
+        return $response;
     }
 
 
